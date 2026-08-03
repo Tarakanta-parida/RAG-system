@@ -15,7 +15,7 @@ load_dotenv()
 
 APP_TITLE = "Document QnA Bot"
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
-CHAT_MODEL = os.getenv("GOOGLE_CHAT_MODEL", "gemini-1.5-flash")
+CHAT_MODEL = os.getenv("GOOGLE_CHAT_MODEL", "gemini-2.0-flash")
 EMBEDDING_MODEL = os.getenv("GOOGLE_EMBEDDING_MODEL", "models/text-embedding-004")
 CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "1000"))
 CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "200"))
@@ -44,14 +44,6 @@ def require_google_api_key():
     if not GOOGLE_API_KEY:
         st.error("GOOGLE_API_KEY is not configured. Add it to your deployment environment.")
         st.stop()
-
-    # Warn if key format looks wrong (valid Gemini keys start with 'AIza')
-    if not GOOGLE_API_KEY.startswith("AIza"):
-        st.warning(
-            "⚠️ Your API key format looks incorrect. "
-            "A valid Google AI Studio key should start with **AIza**. "
-            "Get one free at https://aistudio.google.com/apikey"
-        )
 
 
 @st.cache_resource(show_spinner=False)
