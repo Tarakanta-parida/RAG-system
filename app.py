@@ -41,11 +41,17 @@ def reset_document():
 
 
 def require_google_api_key():
-    if GOOGLE_API_KEY:
-        return True
+    if not GOOGLE_API_KEY:
+        st.error("GOOGLE_API_KEY is not configured. Add it to your deployment environment.")
+        st.stop()
 
-    st.error("GOOGLE_API_KEY is not configured. Add it to your deployment environment.")
-    st.stop()
+    # Warn if key format looks wrong (valid Gemini keys start with 'AIza')
+    if not GOOGLE_API_KEY.startswith("AIza"):
+        st.warning(
+            "⚠️ Your API key format looks incorrect. "
+            "A valid Google AI Studio key should start with **AIza**. "
+            "Get one free at https://aistudio.google.com/apikey"
+        )
 
 
 @st.cache_resource(show_spinner=False)
@@ -150,12 +156,16 @@ if st.session_state.document_uploaded and st.session_state.vector_db is not None
         st.session_state.messages.append({"role": "user", "content": query})
         st.chat_message("user").markdown(query)
 
-        with st.spinner("Searching the document..."):
-            documents = st.session_state.vector_db.similarity_search(query, k=RETRIEVAL_K)
-            context = "\n\n".join(doc.page_content for doc in documents)
-            prompt = build_prompt(context, query)
-            result = get_llm().invoke(prompt)
+        try:
+            with st.spinner("Searching the document..."):
+                documents = st.session_state.vector_db.similarity_search(query, k=RETRIEVAL_K)
+                context = "\n\n".join(doc.page_content for doc in documents)
+                prompt = build_prompt(context, query)
+                result = get_llm().invoke(prompt)
 
-        answer = result.content
-        st.session_state.messages.append({"role": "assistant", "content": answer})
-        st.chat_message("assistant").markdown(answer)
+            answer = result.content
+            st.session_state.messages.append({"role": "assistant", "content": answer})
+            st.chat_message("assistant").markdown(answer)
+        except Exception as e:
+            st.error(f"❌ LLM Error: {e}")
+            st.info("💡 Make sure your API key is valid and starts with **AIza**. Get one at https://aistudio.google.com/apikey")
