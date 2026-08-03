@@ -7,7 +7,8 @@ import streamlit as st
 from dotenv import load_dotenv
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import InMemoryVectorStore
-from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
@@ -16,7 +17,7 @@ load_dotenv()
 APP_TITLE = "Document QnA Bot"
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
 CHAT_MODEL = "gemini-2.0-flash"
-EMBEDDING_MODEL = "models/embedding-001"
+# Embeddings run locally — no API key needed, no version issues
 CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "1000"))
 CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "200"))
 RETRIEVAL_K = int(os.getenv("RETRIEVAL_K", "3"))
@@ -53,11 +54,8 @@ def get_llm():
 
 @st.cache_resource(show_spinner=False)
 def get_embeddings():
-    return GoogleGenerativeAIEmbeddings(
-        model=EMBEDDING_MODEL,
-        google_api_key=GOOGLE_API_KEY,
-        task_type="retrieval_document",
-    )
+    # Uses a free local model — no Gemini API call needed for embeddings
+    return HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
 
 def build_prompt(context, query):
