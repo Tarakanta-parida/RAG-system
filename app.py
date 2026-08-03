@@ -160,4 +160,4 @@ if st.session_state.document_uploaded and st.session_state.vector_db is not None
             st.chat_message("assistant").markdown(answer)
         except Exception as e:
             st.error(f"❌ LLM Error: {e}")
-            st.info("💡 Make sure your API key is valid and starts with **AIza**. Get one at https://aistudio.google.com/apikey")
+            st.info("💡 Check that your API key is valid and has the Gemini API enabled at https://aistudio.google.com/apikey")
