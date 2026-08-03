@@ -15,8 +15,8 @@ load_dotenv()
 
 APP_TITLE = "Document QnA Bot"
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
-CHAT_MODEL = os.getenv("GOOGLE_CHAT_MODEL", "gemini-2.0-flash")
-EMBEDDING_MODEL = os.getenv("GOOGLE_EMBEDDING_MODEL", "models/embedding-001")
+CHAT_MODEL = "gemini-2.0-flash"
+EMBEDDING_MODEL = "models/embedding-001"
 CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "1000"))
 CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "200"))
 RETRIEVAL_K = int(os.getenv("RETRIEVAL_K", "3"))
@@ -56,6 +56,7 @@ def get_embeddings():
     return GoogleGenerativeAIEmbeddings(
         model=EMBEDDING_MODEL,
         google_api_key=GOOGLE_API_KEY,
+        task_type="retrieval_document",
     )
 
 
