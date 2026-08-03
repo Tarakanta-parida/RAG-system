@@ -14,7 +14,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 load_dotenv()
 
 APP_TITLE = "Document QnA Bot"
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
 CHAT_MODEL = os.getenv("GOOGLE_CHAT_MODEL", "gemini-2.5-flash")
 EMBEDDING_MODEL = os.getenv("GOOGLE_EMBEDDING_MODEL", "gemini-embedding-2-preview")
 CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "1000"))
